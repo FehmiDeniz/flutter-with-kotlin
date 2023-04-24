@@ -10,7 +10,16 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  Color backgroundColor = Colors.white;
   static const platform = MethodChannel('fdb-example');
+  Future<void> _generateRandomColor() async {
+    int randomColor;
+    randomColor = await platform.invokeMethod('getRandomColor');
+    setState(() {
+      backgroundColor = Color(randomColor);
+    });
+  }
+
   Future<void> _generateRandomNumber() async {
     int random;
     try {
@@ -26,6 +35,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: backgroundColor,
       appBar: AppBar(
         title: Text(widget.title),
       ),
@@ -43,10 +53,20 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _generateRandomNumber,
-        tooltip: 'Generate',
-        child: const Icon(Icons.refresh),
+      floatingActionButton: Column(mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: _generateRandomNumber,
+            tooltip: 'Generate',
+            child: const Icon(Icons.refresh),
+          ),
+          SizedBox(height: 10,),
+          FloatingActionButton(
+            onPressed: _generateRandomColor,
+            tooltip: 'Generate',
+            child: const Icon(Icons.refresh),
+          ),
+        ],
       ),
     );
   }
